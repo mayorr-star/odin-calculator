@@ -1,0 +1,123 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Oswald', sans-serif;
+}
+
+:root{
+    --operator-bg-colour: orange;
+    --operator-hover-color: rgb(99, 70, 16);
+    --numbers-bg-color: rgb(73, 66, 66);
+    --numbers-color: white;
+    --numbers-hover-color: rgb(43, 39, 39);
+    --special-buttons-bg-colour: #adadad;
+    --special-buttons-colour: rgb(0, 0, 0);
+    --special-hover-color: #888585;
+    --buttons-colour:white;
+}
+
+main{
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.screen{
+    padding: 10px;
+    color: var(--numbers-color);
+    text-align: right;
+    font-size: 20px;
+    border-radius: 10px;
+}
+
+.previous-screen{
+    font-size: 12px;
+    margin: 10px 10px 10px 0;
+    height: 10px;
+}
+
+.current-screen{
+    margin-right: 8px;
+    height: 10px;
+}
+
+.calculator{
+    background-color: black;
+    padding-bottom: 30px;
+    padding-top: 10px;
+    border-radius: 50px;
+    width: 23%;
+}
+
+.display{
+    color: var(--numbers-color);
+    border-bottom: 1px solid white;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.special-btn{
+    background-color: var(--special-buttons-bg-colour);
+    color: var(--special-buttons-colour);
+}
+
+.special-btn.dot{
+    color: var(--numbers-color);
+}
+
+.special-btn:hover{
+    background-color: var(--special-hover-color);
+}
+
+.number-btn{
+    background-color: var(--numbers-bg-color);
+    color: var(--numbers-color);
+    font-weight: 500;
+}
+
+.number-btn:hover{
+    background-color: var(--numbers-hover-color);
+}
+
+.operator-btn, .solve-btn{
+    background-color: var(--operator-bg-colour);
+    color: var(--numbers-color);
+    font-weight: 700;
+}
+
+.operator-btn:hover, .solve-btn:hover{
+    background-color: var(--operator-hover-color);
+}
+
+.zero{
+    flex-grow: 0.85;
+    border-radius: 40px;
+    text-align: left;
+    padding-left: 17px;
+}
+
+button{
+    padding: 5px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    outline: 0;
+    margin-left: 10px;
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.buttons-container{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+footer{
+    margin-top: 50px;
+    text-align: center;
+}
