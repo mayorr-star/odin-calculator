@@ -67,17 +67,18 @@ const handleOperator = (op) => {
 };
 
 const populateDisplay = (value, screen) => {
-  if (screen === numbersScreen) {
-    screen.textContent += value;
-  } else {
-    screen.textContent = value;
-  }
+    if (screen === numbersScreen) {
+      screen.textContent += value;
+    } else {
+      screen.textContent = value;
+    }
 };
 
-const solveChainOfNumbers = () => {
-  result = numbers.reduce((previousResult, currentNum) => {
+const solveChainOfNumbers = (array) => {
+  result = array.reduce((previousResult, currentNum) => {
     return operate(previousResult, operators[operators.length - 2], currentNum);
   });
+  array.splice(0, 2, result.toString());
 };
 
 const clearAll = () => {
@@ -87,6 +88,9 @@ const clearAll = () => {
   previousNumber = "";
   operator = null;
   result = null;
+  numberOfOperators = 0;
+  numbers.length = 0;
+  operators.length = 0;
 };
 
 buttons.forEach((button) => {
@@ -94,13 +98,15 @@ buttons.forEach((button) => {
     switch (true) {
       case e.currentTarget.classList.contains("number-btn"):
         displayNumber(button.textContent);
-        populateDisplay(numberValue, numbersScreen);
+        if (currentNumber.length <= 10) {
+          populateDisplay(numberValue, numbersScreen);
+        }
         break;
       case e.currentTarget.classList.contains("operator-btn"):
         handleOperator(button.textContent);
         numbers.push(previousNumber);
         if (numberOfOperators > 1) {
-          solveChainOfNumbers();
+          solveChainOfNumbers(numbers);
           populateDisplay(result, resultScreen);
         }
         populateDisplay(` ${operator} `, numbersScreen);
@@ -108,7 +114,11 @@ buttons.forEach((button) => {
       case e.currentTarget.classList.contains("dot"):
         break;
       case e.currentTarget.getAttribute("id") === "solve":
-        result = operate(previousNumber, operator, currentNumber);
+        if (numberOfOperators > 1) {
+          result = operate(result, operator, currentNumber);
+        } else {
+          result = operate(previousNumber, operator, currentNumber);
+        }
         populateDisplay(result, resultScreen);
         break;
       case e.currentTarget.getAttribute("id") === "all-clear":
