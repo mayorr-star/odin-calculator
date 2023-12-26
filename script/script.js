@@ -1,13 +1,17 @@
-const previouScreen = document.querySelector(".previous-screen");
-const currentScreen = document.querySelector(".current-screen");
+const numbersScreen = document.querySelector(".numbers-screen");
+const resultScreen = document.querySelector(".result-screen");
 const buttons = document.querySelectorAll("button");
 const footer = document.querySelector("footer");
 
 let operator = null;
-let currentValue = "";
-let previousValue = "";
-let numberOfOpertors = 0;
+let result = null;
+let numberOfOperators = 0;
+let numberValue = "";
+let currentNumber = "";
+let previousNumber = "";
 const currentYear = new Date().getFullYear();
+const operators = [];
+const numbers = [];
 
 footer.innerHTML = `Copyright &#169 mayorr-star ${currentYear}`;
 
@@ -28,7 +32,7 @@ const multiply = (num1, num2) => {
 };
 
 const findPercentage = (num1, num2) => {
-  return num1 / 100 * num2;
+  return (num1 / 100) * num2;
 };
 
 const operate = (num1, operator, num2) => {
@@ -45,64 +49,67 @@ const operate = (num1, operator, num2) => {
     case "÷":
       return divide(num1, num2);
     default:
-      return remainder(num1, num2);
+      return findPercentage(num1, num2);
   }
 };
 
-const populateDisplay = (value, screen) => {
-  if (screen.textContent === "0") {
-    screen.textContent = ""
-  }
-  screen.textContent = value;
-};
-
-const handleNumber = (num) => {
-  if (currentValue.length <= 10) {
-    currentValue += num;
-  }
+const displayNumber = (num) => {
+  currentNumber += num;
+  numberValue = num;
 };
 
 const handleOperator = (op) => {
+  numberOfOperators++;
+  operators.push(op);
   operator = op;
-  previousValue = currentValue;
-  currentValue = ""
+  previousNumber = currentNumber;
+  currentNumber = "";
+};
+
+const populateDisplay = (value, screen) => {
+  if (screen === numbersScreen) {
+    screen.textContent += value;
+  } else {
+    screen.textContent = value;
+  }
+};
+
+const solveChainOfNumbers = () => {
+  result = numbers.reduce((previousResult, currentNum) => {
+    return operate(previousResult, operators[operators.length - 2], currentNum);
+  });
 };
 
 const clearAll = () => {
-  currentScreen.textContent = "0";
-  previouScreen.textContent = "0";
+  resultScreen.textContent = "";
+  numbersScreen.textContent = "";
+  currentNumber = "";
+  previousNumber = "";
   operator = null;
-  currentValue = "";
-  previousValue = "";
+  result = null;
 };
-
-const addDecimal = () => {
-  if (!currentValue.includes(".")) {
-    currentValue += "."
-  }
-}
 
 buttons.forEach((button) => {
   button.addEventListener("click", (e) => {
     switch (true) {
       case e.currentTarget.classList.contains("number-btn"):
-        handleNumber(e.currentTarget.textContent);
-        populateDisplay(currentValue, currentScreen);
+        displayNumber(button.textContent);
+        populateDisplay(numberValue, numbersScreen);
         break;
       case e.currentTarget.classList.contains("operator-btn"):
-        handleOperator(e.currentTarget.textContent);
-        previouScreen.textContent += previousValue + " " + operator + " ";
-        populateDisplay(operate(previousValue, operator, currentValue), currentScreen)
-        populateDisplay(currentValue, currentScreen);
+        handleOperator(button.textContent);
+        numbers.push(previousNumber);
+        if (numberOfOperators > 1) {
+          solveChainOfNumbers();
+          populateDisplay(result, resultScreen);
+        }
+        populateDisplay(` ${operator} `, numbersScreen);
         break;
       case e.currentTarget.classList.contains("dot"):
-        addDecimal()
         break;
       case e.currentTarget.getAttribute("id") === "solve":
-        if (currentValue !== "" && previousValue !== "") {
-          populateDisplay(operate(previousValue, operator, currentValue), currentScreen);
-          populateDisplay("", previouScreen)
-        }
+        result = operate(previousNumber, operator, currentNumber);
+        populateDisplay(result, resultScreen);
         break;
       case e.currentTarget.getAttribute("id") === "all-clear":
         clearAll();
