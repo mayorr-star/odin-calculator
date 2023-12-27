@@ -14,6 +14,7 @@ const operators = [];
 const numbers = [];
 
 footer.innerHTML = `Copyright &#169 mayorr-star ${currentYear}`;
+window.addEventListener("keypress", (e) => addKeyboardSupport(e));
 
 const add = (num1, num2) => {
   return num1 + num2;
@@ -47,9 +48,20 @@ const operate = (num1, operator, num2) => {
     case "x":
       return multiply(num1, num2);
     case "÷":
-      return divide(num1, num2);
+      if (num2 === 0) {
+        return (result = "Can't divide by zero");
+      } else {
+        return divide(num1, num2);
+      }
     default:
       return findPercentage(num1, num2);
+  }
+};
+
+const handleNumber = (num) => {
+  displayNumber(num);
+  if (currentNumber.length <= 10) {
+    populateDisplay(numberValue, numbersScreen);
   }
 };
 
@@ -59,6 +71,16 @@ const displayNumber = (num) => {
 };
 
 const handleOperator = (op) => {
+  selectOperator(op);
+  numbers.push(previousNumber);
+  if (numberOfOperators > 1) {
+    solveChainOfNumbers(numbers);
+    populateDisplay(result, resultScreen);
+  }
+  populateDisplay(` ${operator} `, numbersScreen);
+};
+
+const selectOperator = (op) => {
   numberOfOperators++;
   operators.push(op);
   operator = op;
@@ -67,11 +89,11 @@ const handleOperator = (op) => {
 };
 
 const populateDisplay = (value, screen) => {
-    if (screen === numbersScreen) {
-      screen.textContent += value;
-    } else {
-      screen.textContent = value;
-    }
+  if (screen === numbersScreen) {
+    screen.textContent += value;
+  } else {
+    screen.textContent = value;
+  }
 };
 
 const solveChainOfNumbers = (array) => {
@@ -93,36 +115,89 @@ const clearAll = () => {
   operators.length = 0;
 };
 
+const deleteContent = () => {
+  numbersScreen.textContent = numbersScreen.textContent.substring(
+    0,
+    numbersScreen.textContent.length - 1
+  );
+  if (
+    operators.includes(
+      numbersScreen.textContent[numbersScreen.textContent.length - 1]
+    )
+  ) {
+    operators.pop();
+  }
+};
+
+const addDecimal = () => {
+  if (!currentNumber.includes(".")) {
+    currentNumber += ".";
+  }
+  populateDisplay(".", numbersScreen);
+};
+
 buttons.forEach((button) => {
   button.addEventListener("click", (e) => {
     switch (true) {
       case e.currentTarget.classList.contains("number-btn"):
-        displayNumber(button.textContent);
-        if (currentNumber.length <= 10) {
-          populateDisplay(numberValue, numbersScreen);
-        }
+        handleNumber(button.textContent);
         break;
       case e.currentTarget.classList.contains("operator-btn"):
         handleOperator(button.textContent);
-        numbers.push(previousNumber);
-        if (numberOfOperators > 1) {
-          solveChainOfNumbers(numbers);
-          populateDisplay(result, resultScreen);
-        }
-        populateDisplay(` ${operator} `, numbersScreen);
         break;
       case e.currentTarget.classList.contains("dot"):
+        addDecimal();
         break;
       case e.currentTarget.getAttribute("id") === "solve":
-        if (numberOfOperators > 1) {
-          result = operate(result, operator, currentNumber);
-        } else {
-          result = operate(previousNumber, operator, currentNumber);
+        if (currentNumber !== "" && previousNumber !== "") {
+          if (numberOfOperators > 1) {
+            result = operate(result, operator, currentNumber);
+          } else {
+            result = operate(previousNumber, operator, currentNumber);
+          }
+          populateDisplay(result, resultScreen);
         }
-        populateDisplay(result, resultScreen);
         break;
       case e.currentTarget.getAttribute("id") === "all-clear":
         clearAll();
+        break;
     }
   });
 });
+
+//Keyboard Support
+
+function convertOperator(op) {
+  switch (op) {
+    case "+":
+      return "+";
+    case "-":
+      return "-";
+    case "*":
+      return "x";
+    case "/":
+      return "÷";
+  }
+}
+
+function addKeyboardSupport(e) {
+  if (e.key >= 0 && e.key <= 9) {
+    handleNumber(e.key);
+  } else if (e.key === "+" || e.key === "-" || e.key === "*" || e.key === "/") {
+    convertOperator(e.key);
+    handleOperator(e.key);
+  } else if  (e.key === ".") {
+    addDecimal();
+  } else if (e.key === "Enter") {
+    if (currentNumber !== "" && previousNumber !== "") {
+      if (numberOfOperators > 1) {
+        result = operate(result, operator, currentNumber);
+      } else {
+        result = operate(previousNumber, operator, currentNumber);
+      }
+      populateDisplay(result, resultScreen);
+    }
+  } else if (e.key === "Escape") {
+    clearAll();
+  }
+}
