@@ -14,7 +14,7 @@ const operators = [];
 const numbers = [];
 
 footer.innerHTML = `Copyright &#169 mayorr-star ${currentYear}`;
-window.addEventListener("keypress", (e) => addKeyboardSupport(e));
+window.addEventListener("keydown", (e) => addKeyboardSupport(e));
 
 const add = (num1, num2) => {
   return num1 + num2;
@@ -115,25 +115,36 @@ const clearAll = () => {
   operators.length = 0;
 };
 
-const deleteContent = () => {
-  numbersScreen.textContent = numbersScreen.textContent.substring(
-    0,
-    numbersScreen.textContent.length - 1
-  );
-  if (
-    operators.includes(
-      numbersScreen.textContent[numbersScreen.textContent.length - 1]
-    )
-  ) {
-    operators.pop();
-  }
-};
+// const deleteContent = () => {
+//   numbersScreen.textContent = numbersScreen.textContent.substring(
+//     0,
+//     numbersScreen.textContent.length - 1
+//   );
+//   if (
+//     operators.includes(
+//       numbersScreen.textContent[numbersScreen.textContent.length - 1]
+//     )
+//   ) {
+//     operators.pop();
+//   }
+// };
 
 const addDecimal = () => {
   if (!currentNumber.includes(".")) {
     currentNumber += ".";
   }
   populateDisplay(".", numbersScreen);
+};
+
+const solveOperation = () => {
+  if (currentNumber !== "" && previousNumber !== "") {
+    if (numberOfOperators > 1) {
+      result = operate(result, operator, currentNumber);
+    } else {
+      result = operate(previousNumber, operator, currentNumber);
+    }
+    populateDisplay(result, resultScreen);
+  }
 };
 
 buttons.forEach((button) => {
@@ -149,14 +160,9 @@ buttons.forEach((button) => {
         addDecimal();
         break;
       case e.currentTarget.getAttribute("id") === "solve":
-        if (currentNumber !== "" && previousNumber !== "") {
-          if (numberOfOperators > 1) {
-            result = operate(result, operator, currentNumber);
-          } else {
-            result = operate(previousNumber, operator, currentNumber);
-          }
-          populateDisplay(result, resultScreen);
-        }
+        solveOperation();
+        console.log(previousNumber);
+        console.log(numbersScreen.textContent);
         break;
       case e.currentTarget.getAttribute("id") === "all-clear":
         clearAll();
@@ -177,27 +183,31 @@ function convertOperator(op) {
       return "x";
     case "/":
       return "÷";
+    case "%":
+      return "%";
   }
 }
 
 function addKeyboardSupport(e) {
-  if (e.key >= 0 && e.key <= 9) {
-    handleNumber(e.key);
-  } else if (e.key === "+" || e.key === "-" || e.key === "*" || e.key === "/") {
-    convertOperator(e.key);
-    handleOperator(e.key);
-  } else if  (e.key === ".") {
-    addDecimal();
-  } else if (e.key === "Enter") {
-    if (currentNumber !== "" && previousNumber !== "") {
-      if (numberOfOperators > 1) {
-        result = operate(result, operator, currentNumber);
-      } else {
-        result = operate(previousNumber, operator, currentNumber);
-      }
-      populateDisplay(result, resultScreen);
-    }
-  } else if (e.key === "Escape") {
-    clearAll();
+  switch (true) {
+    case e.key >= 0 && e.key <= 9:
+      handleNumber(e.key);
+      break;
+    case e.key === "+":
+    case e.key === "-":
+    case e.key === "*":
+    case e.key === "/":
+    case e.key === "%":
+      handleOperator(convertOperator(e.key));
+      break;
+    case e.key === ".":
+      addDecimal();
+      break;
+    case e.key === "Enter":
+      e.preventDefault();
+      solveOperation();
+      break;
+    case e.key === "Escape":
+      clearAll();
   }
 }
