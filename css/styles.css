@@ -102,8 +102,6 @@ body{
 .equal{
     flex-grow: 0.85;
     border-radius: 40px;
-    text-align: left;
-    padding-left: 17px;
     text-align: center;
     font-size: 32px;
 }
