@@ -14,8 +14,7 @@ This is my solution to the CALCULATOR project on TOP's curriculumn
 
 ### Links
 
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
-- Live Site URL: [Add live site URL here](https://your-live-site-url.com)
+- Live Site URL: [https://mayorr-star.github.io/odin-calculator/](https://your-live-site-url.com)
 
 ### Built With
 
