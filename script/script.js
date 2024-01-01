@@ -58,6 +58,10 @@ const operate = (num1, operator, num2) => {
   }
 };
 
+function roundResult(num) {
+  return Math.round(num * 1000) / 1000;
+}
+
 const handleNumber = (num) => {
   displayNumber(num);
   if (currentNumber.length <= 10) {
@@ -98,7 +102,7 @@ const populateDisplay = (value, screen) => {
 
 const solveChainOfNumbers = (array) => {
   result = array.reduce((previousResult, currentNum) => {
-    return operate(previousResult, operators[operators.length - 2], currentNum);
+    return roundResult(operate(previousResult, operators[operators.length - 2], currentNum));
   });
   array.splice(0, 2, result.toString());
 };
@@ -115,20 +119,6 @@ const clearAll = () => {
   operators.length = 0;
 };
 
-// const deleteContent = () => {
-//   numbersScreen.textContent = numbersScreen.textContent.substring(
-//     0,
-//     numbersScreen.textContent.length - 1
-//   );
-//   if (
-//     operators.includes(
-//       numbersScreen.textContent[numbersScreen.textContent.length - 1]
-//     )
-//   ) {
-//     operators.pop();
-//   }
-// };
-
 const addDecimal = () => {
   if (!currentNumber.includes(".")) {
     currentNumber += ".";
@@ -139,9 +129,9 @@ const addDecimal = () => {
 const solveOperation = () => {
   if (currentNumber !== "" && previousNumber !== "") {
     if (numberOfOperators > 1) {
-      result = operate(result, operator, currentNumber);
+      result = roundResult(operate(result, operator, currentNumber));
     } else {
-      result = operate(previousNumber, operator, currentNumber);
+      result = roundResult(operate(previousNumber, operator, currentNumber));
     }
     populateDisplay(result, resultScreen);
   }
@@ -161,8 +151,6 @@ buttons.forEach((button) => {
         break;
       case e.currentTarget.getAttribute("id") === "solve":
         solveOperation();
-        console.log(previousNumber);
-        console.log(numbersScreen.textContent);
         break;
       case e.currentTarget.getAttribute("id") === "all-clear":
         clearAll();
@@ -189,6 +177,7 @@ function convertOperator(op) {
 }
 
 function addKeyboardSupport(e) {
+  e.preventDefault();
   switch (true) {
     case e.key >= 0 && e.key <= 9:
       handleNumber(e.key);
@@ -204,10 +193,10 @@ function addKeyboardSupport(e) {
       addDecimal();
       break;
     case e.key === "Enter":
-      e.preventDefault();
       solveOperation();
       break;
     case e.key === "Escape":
       clearAll();
+      break;
   }
 }
