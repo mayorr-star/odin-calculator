@@ -7,7 +7,6 @@ This is my solution to the CALCULATOR project on TOP's curriculumn
 - [Overview](#overview)
   - [Links](#links)
   - [Built with](#built-with)
-  - [What I learned](#what-i-learned)
   - [Continued development](#continued-development)
 - [Author](#author)
 
@@ -24,17 +23,11 @@ This is my solution to the CALCULATOR project on TOP's curriculumn
 - Flexbox
 - Javascript ECMAScript 6
 
-### What I learned
 
-In the course of this project,  
-- I learnt how to write arrow functions
-- Passing functions as arguments to ther functions 
+### Continued development
+
+I tried to add a delete button to clear wrongly inputed code. It didn't quite work properly so I removed it. This is the area I plan on focusing on, to improve the project.
 
 ## Author
 
 - Twitter - [@His_mayor](https://www.twitter.com/@His_mayor)
-
-### Continued development
-
-Use this section to outline areas that you want to continue focusing on in future projects. These could be concepts you're still not completely comfortable with or techniques you found useful that you want to refine and perfect.
-I plan on adding a delete button to clear wrongly inputed values
